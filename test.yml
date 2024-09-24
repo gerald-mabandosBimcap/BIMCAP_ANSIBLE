@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: BIMCAP
   tasks:
     - name: Check Python executable
       command: python3 -m site
