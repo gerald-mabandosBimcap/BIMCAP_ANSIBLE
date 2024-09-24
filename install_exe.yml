@@ -1,0 +1,22 @@
+---
+- name: Install Software
+  hosts: BIMCAP
+  tasks:
+    - name: Ensure C:\Temp exists
+      win_file:
+        path: C:\Temp
+        state: directory
+
+    - name: Copy installer to Windows machine
+      win_copy:
+        src: /home/user/vlc-3.0.21-win32.exe  # Path to the installer in your WSL
+        dest: C:\Temp\vlc-3.0.21-win32.exe  # Destination on the Windows machine
+
+    - name: Run the installer
+      win_shell: |
+        C:\Temp\vlc-3.0.21-win32.exe /S  # Modify the installation flags as needed
+
+    - name: Delete the installer after installation
+      win_file:
+        path: C:\Temp\vlc-3.0.21-win32.exe
+        state: absent

@@ -1,0 +1,23 @@
+---
+- name: Uninstall VLC Media Player
+  hosts: BIMCAP
+  tasks:
+    - name: Ensure VLC uninstaller runs with logging
+      win_shell: |
+        Start-Process -FilePath "C:\Program Files (x86)\VideoLAN\VLC\uninstall.exe" -ArgumentList "/S" -Wait -Verb RunAs
+      args:
+        executable: powershell
+
+    - name: Capture uninstallation log
+      win_shell: |
+        if (Test-Path "C:\Program Files (x86)\VideoLAN\VLC\uninstall.exe") {
+          Start-Process -FilePath "C:\Program Files (x86)\VideoLAN\VLC\uninstall.exe" -ArgumentList "/S /L=uninstall_log.txt" -Wait -Verb RunAs
+        }
+      args:
+        executable: powershell
+
+    - name: Remove VLC directory after uninstallation
+      win_file:
+        path: C:\Program Files (x86)\VideoLAN\VLC
+        state: absent
+
